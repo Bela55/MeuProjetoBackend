@@ -1,58 +1,51 @@
-const conectarDb = require('./database.js');
+const  conectarDb  = require('./database');
 
-const db = conectarDb();
-
-const collection = db.collection('contatos');
 class Contato {
     constructor(nome, email, telefone) {
-        this.id = null;
         this.nome = nome;
         this.email = email;
         this.telefone = telefone;
-    };
-}; 
+        this.id = null;
+    }
+}
 
-async function inserir() {
-    try {
-        const result = await collection.insertOne({ nome: this.nome, email: this.email, telefone: this.telefone });
-        this.id = result.ops[0]._id;
-    } catch (error) {
-        console.error("Erro ao inserir contato:", error);
-        throw error;
-    };
-};
+async function inserir(contato) {
+    const {nome, email, telefone}  = contato;
+    const db = await conectarDb();
+    const collection = db.collection("contatos");
+    const result = await collection.insertOne({nome, email, telefone});
+    contato.id = result.insertedId;
+    return contato;
+}
 
-async function alterar() {
-    try {
-        await collection.updateOne({ _id: this.id }, { $set: { nome: this.nome, email: this.email, telefone: this.telefone } });
-    } catch (error) {
-        console.error("Erro ao alterar contato:", error);
-        throw error;
-    };
-};
+async function consultar(contato) {
+    const { nome } = contato;
+    const db = await conectarDb();
+    const collection = db.collection('contatos');
+    const result = await collection.findOne({ nome });
+    contato.id = result._id;
+    contato.email = result.email;
+    result.telefone = result.telefone;
+    return contato;
+}
 
-async function deletar() {
-    try {
-        await collection.deleteOne({ _id: this.id });
-    } catch (error) {
-        console.error("Erro ao deletar contato:", error);
-        throw error;
-    };
-};
+async function alterar(contato) {
+    const {id, nome, email, telefone}  = contato;
+    const db = await conectarDb();
+    const collection = db.collection("contatos");
+    await collection.updateOne(
+        { _id: id },
+        { $set: {nome, email, telefone}}
+    );
+    return contato;
+}
 
-async function buscar() {
-    try {
-        const contatoEncontrado = await collection.findOne({ nome: this.nome });
-        if (contatoEncontrado) {
-            this.id = contatoEncontrado._id;
-            this.nome = contatoEncontrado.nome;
-            this.email = contatoEncontrado.email;
-            this.telefone = contatoEncontrado.telefone;
-        }
-    } catch (error) {
-        console.error("Erro ao buscar contato:", error);
-        throw error;
-    };
-};
+async function deletar(contato) {
+    const { id } = contato;
+    const db = await conectarDb();
+    const collection = db.collection('contatos');
+    await collection.deleteOne({ _id: id});
+    return contato;
+}
 
-module.exports = Contato;
+module.exports = {Contato, inserir, consultar, alterar, deletar};
