@@ -21,14 +21,20 @@ async function listarTodos(req, res) {
     res.json(produtos);
 }
 
-async function obter(req, res, next) {
+async function buscarPeloId(req, res, next) {
     try {
-    const id = new   mongoose.Types.ObjectId(req.params.id);
-    const produto = await Produto.findOne({_id: id});
-        res.json(produto);
+    const id = new mongoose.Types.ObjectId(req.params.id);
+    const produto = await Produto.findOne({ _id: id });
+    next();
     } catch (err) {
-        res.status(404).json({msg: "Produto não encontrado"});
-    };
+    res.status(404).json({msg: "Produto não encontrado"});
+    }
+}
+
+async function obter(req, res) {
+    const id = new mongoose.Types.ObjectId(req.params.id);
+    const produto = await Produto.findOne({_id: id});
+    res.json(produto);   
 };
 
 async function atualizar(req, res) {
@@ -37,6 +43,20 @@ async function atualizar(req, res) {
     res.json(produto)
 }
 
+async function remover(req, res) {
+    const id = new mongoose.Types.ObjectId(req.params.id);
+    const produto = await Produto.findOneAndDelete({ _id: id });
+    res.status(204).end()
+};
 
 
-module.exports = { validaDados, criar, listarTodos, obter, atualizar };
+
+module.exports = { 
+    validaDados, 
+    criar, 
+    listarTodos,
+    buscarPeloId, 
+    obter, 
+    atualizar, 
+    remover
+};

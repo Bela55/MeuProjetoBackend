@@ -7,14 +7,16 @@ const request = supertest(app);
 let id = null;
 
  describe("API Loja Virtual", () => {
-//   test("Deve retornar 201 e um JSON para POST /produtos", async () => {
-//     const result = await request
-//         .post("/produtos")
-//         .send({ nome: "banana", preco: 15.0 });
-//     id= result.body._id.toString();
-//     expect(result.status).toBe(201);
-//     expect(result.type).toBe("application/json");
-//   });
+    test("Deve retornar 201 e um JSON para POST /produtos", async () => {
+      const result = await request
+        .post("/produtos")
+        .send({ nome: "banana", preco: 15.0 });
+      id = result.body._id.toString();
+      expect(result.status).toBe(201);
+      expect(result.type).toBe("application/json");
+    });
+
+ 
 
   test("Deve retornar 422 e um JSON para POST /produtos", async () => {
     const result = await request
@@ -76,7 +78,7 @@ let id = null;
     const result = await request
         .delete(`/produtos/${id}`)
     expect(result.status).toBe(204);
-    expect(result.type).toBe({});
+    expect(result.type).toBe("");
   });
 
   test("Deve retornar 404 e um JSON para DELETE /produtos/id", async () => {
