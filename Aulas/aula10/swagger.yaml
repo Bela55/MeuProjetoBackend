@@ -12,32 +12,105 @@ paths:
       responses:
         200:
           content:
-            aplication/json:
+            application/json:
               schema:
                 $ref: '#/components/schemas/ArrayOfProdutos'
     post:
-       tags:
-        - produtos   
+      tags:
+        - produtos
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Produto'
+      responses:
+        201:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Produto'
+        422:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Mensagem'
   /produtos/{id}:
     get:
       tags:
-        - produtos    
+        - produtos
+      parameters:
+        - in: path
+          type: string
+          name: id
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Produto'
+        404:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Mensagem'
+        422:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Mensagem'
     put:
       tags:
-        - produtos    
+        - produtos
+      parameters:
+        - in: path
+          type: string
+          name: id
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Produto'
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Produto'
+        404:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Mensagem'
     delete:
       tags:
-        - produtos    
+        - produtos
+      parameters:
+        - in: path
+          type: string
+          name: id
+      responses:
+        204:
+          content:
+        404:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Mensagem'
 components:
   schemas:
-    ArrayOfProdutos: 
+    ArrayOfProdutos:
       type: array
       items:
         $ref: '#/components/schemas/Produto'
     Produto:
-      type: objecy
-      properties:  
+      type: object
+      properties:
         nome:
           type: string
         preco:
           type: number
+    Mensagem:
+      type: object
+      properties:
+        msg:
+          type: string
