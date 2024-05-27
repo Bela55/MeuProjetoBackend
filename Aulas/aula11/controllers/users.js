@@ -34,4 +34,19 @@ async function entrar(req, res) {
   }
 }
 
-module.exports = {criar, entrar}
+function renovar(req, res) {
+  const token = req.headers['authorization'];
+
+  if (token) {
+    try{
+      const payload = jwt.verify(token, '123456');
+      res.json({ token: jwt.sign({ email: payload.email }, '123456')});
+    } catch(error) {
+      res.status(401).json({ msg: "Token inválido"});
+    }
+  } else {
+    res.status(400).json({ msg: 'Token não fornecido'});
+  }
+}
+
+module.exports = {criar, entrar, renovar };
